@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<resources>
+    <style name="Theme.AynehaSchool" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">@color/nuit_barre</item>
+        <item name="android:navigationBarColor">@color/nuit_barre</item>
+        <item name="android:windowBackground">@color/nuit</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:forceDarkAllowed">false</item>
+    </style>
+</resources>

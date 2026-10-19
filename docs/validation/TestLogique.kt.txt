@@ -1,0 +1,51 @@
+import com.maigus.aynehaschool.*
+import java.io.File
+
+fun enc(cps: List<Int>) = cps.joinToString(",") { if (Ayneha.estAyneha(it)) it.toString(16) else "L" + it.toString(16) }
+
+fun main(args: Array<String>) {
+    var ok = 0; var ko = 0
+    fun verifie(cond: Boolean, msg: String) { if (cond) ok++ else { ko++; println("ÉCHEC : $msg") } }
+
+    // 1. Table
+    verifie(Ayneha.LETTRES.size == 27, "27 lettres")
+    verifie(Ayneha.LETTRES.map { it.nom }.joinToString(" ") == "A E I O U B P M F W D T N L R S Z Ʃ TƩ J DJ Ɲ Y G K H Ŋ", "ordre lexico " + Ayneha.LETTRES.map { it.nom })
+    verifie(Ayneha.COMBINAISONS.size == 50, "50 combinaisons, trouvé ${Ayneha.COMBINAISONS.size}")
+    verifie(Ayneha.lettre("K").variantes[Variante.DOUBLE] == 0x10ffcf && Ayneha.lettre("K").variantes[Variante.MUETTE] == 0x10ffd0, "K")
+    verifie(Ayneha.lettre("E").variantes[Variante.OUVERTE] == 0x10ffa5, "E ouvert")
+    verifie(Ayneha.lettre("O").variantes[Variante.NASALISEE] == 0x10ffa9, "O nasal")
+    verifie(Ayneha.lettre("H").variantes.size == 1, "H sans combinaison")
+    verifie(Ayneha.lettre("SH").variantes.keys == setOf(Variante.INITIALE, Variante.DOUBLE), "Ʃ")
+    verifie(Ayneha.lettre("NG").variantes[Variante.MUETTE] == 0x10ffd2, "Ŋ muet")
+    verifie(Ayneha.chiffre(0) == 0x10ff7c && Ayneha.chiffre(9) == 0x10ff85, "chiffres")
+    verifie(0xE000 + Ayneha.DECALAGE_ANCIENNE_PLAGE == 0x10FF7C, "décalage")
+    // ordre des variantes de E
+    verifie(Ayneha.lettre("E").variantesOrdonnees.map { it.first.nom } == listOf("initiale", "nasalisée", "ouverte", "double"), "variantes E")
+
+    // 2. Paires de substitution
+    val s = Ayneha.texte(listOf(0x10ff9c, 0x10ffcc))
+    verifie(s.length == 4, "2 glyphes = 4 unités UTF-16")
+    verifie(Ayneha.points(s) == listOf(0x10ff9c, 0x10ffcc), "points()")
+    verifie(Ayneha.points(Ayneha.visuel(listOf(1 + 0x10ff7c, 0x10ff7c))) == listOf(0x10ff7c, 0x10ff7d), "visuel inverse")
+    verifie(Ayneha.points(Ayneha.nombreVisuel("10")) == listOf(0x10ff7c, 0x10ff7d), "10 visuel : 0 à gauche, 1 à droite")
+
+    // 3. Ordre
+    val mots = listOf("gao", "ayneha", "bi", "aa", "a", "ã", "ba", "baa")
+    val tries = mots.sortedWith(compareBy(Ayneha.ORDRE) { Transcripteur.mot(it) })
+    verifie(tries == listOf("a", "ayneha", "ã", "aa", "ba", "baa", "bi", "gao"), "tri $tries")
+
+    // 4. Transcription == transcripteur web
+    val lignes = File(args[0]).readLines()
+    val attendu = File(args[1]).readLines()
+    lignes.zip(attendu).forEach { (l, a) ->
+        val obtenu = Transcripteur.transcrire(l)[0].joinToString(" ") { enc(it.points) }
+        verifie(obtenu == a, "transcription « $l »\n   web : $a\n   kt  : $obtenu")
+    }
+    // 5. è / ô
+    verifie(Transcripteur.mot("cayèno") == Transcripteur.mot("cayɛno"), "è = ɛ")
+    verifie(Transcripteur.mot("kôddôro") == Transcripteur.mot("kɔddɔro"), "ô = ɔ")
+    verifie(Transcripteur.mot("bè") == listOf(0x10ff86, 0x10ffa5), "bè")
+
+    println("Tests : $ok réussis, $ko échoués")
+    if (ko > 0) System.exit(1)
+}

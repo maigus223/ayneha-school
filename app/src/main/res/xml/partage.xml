@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<!-- Dossier du cache où sont écrites les images partagées (aucune permission nécessaire). -->
+<paths>
+    <cache-path name="images" path="partage/" />
+</paths>
