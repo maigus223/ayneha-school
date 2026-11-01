@@ -27,6 +27,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -65,10 +67,25 @@ fun EcranAccueil(ouvrir: (Ecran) -> Unit) {
     // Tout l'accueil tient sur un seul écran, sans défilement : les cartes se partagent la hauteur.
     Column(Modifier.fillMaxSize()) {
         // ---- Bandeau d'accueil ----
+        // Mise à jour depuis ayneha.org : tirer le bandeau vers le bas fait descendre le
+        // rond orange ; en lâchant, l'application cherche une nouvelle version (MiseAJourUi.kt).
         Box(
             Modifier
                 .fillMaxWidth()
                 .background(Brush.verticalGradient(listOf(Palette.NuitCarte2, Palette.NuitBarre)))
+                .pointerInput(Unit) {
+                    var tire = 0f
+                    detectVerticalDragGestures(
+                        onDragStart = { tire = 0f },
+                        onDragEnd = { if (tire > 0f) MiseAJourUi.courant?.lacher(); tire = 0f },
+                        onDragCancel = { tire = 0f; MiseAJourUi.courant?.tirer(0f); MiseAJourUi.courant?.lacher() },
+                        onVerticalDrag = { change, dy ->
+                            tire = (tire + dy).coerceAtLeast(0f)
+                            MiseAJourUi.courant?.tirer(tire)
+                            change.consume()
+                        }
+                    )
+                }
                 .statusBarsPadding()
         ) {
             TombeauAskia(

@@ -3,4 +3,6 @@
 <!-- Dossier du cache où sont écrites les images partagées (aucune permission nécessaire). -->
 <paths>
     <cache-path name="images" path="partage/" />
+    <!-- Mise à jour depuis ayneha.org : APK téléchargé dans cacheDir/maj -->
+    <cache-path name="maj" path="maj/" />
 </paths>

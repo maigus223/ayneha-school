@@ -46,9 +46,14 @@ fun EcranAPropos(retour: () -> Unit) {
 
             TitreSection("Confidentialité")
             Paragraphe(
-                "L'application ne demande aucune permission, n'utilise pas internet et ne collecte aucune donnée. " +
+                "L'application fonctionne sans internet et ne collecte aucune donnée. " +
                     "Tes réglages et tes meilleurs scores restent sur ton téléphone. Les images que tu partages " +
-                    "sont créées sur ton téléphone et envoyées uniquement là où tu le choisis."
+                    "sont créées sur ton téléphone et envoyées uniquement là où tu le choisis. " +
+                    "Mise à jour depuis ayneha.org : seulement quand tu tires le bandeau de l'accueil vers le bas, " +
+                    "l'application lit sur ayneha.org un petit fichier qui indique la dernière version. Si une " +
+                    "version plus récente existe, elle peut la télécharger depuis ayneha.org ; son empreinte est " +
+                    "vérifiée et c'est toi qui confirmes l'installation. Les permissions Internet et installation " +
+                    "d'applications servent uniquement à cela. Aucune donnée personnelle n'est envoyée."
             )
 
             TitreSection("Logiciel libre")

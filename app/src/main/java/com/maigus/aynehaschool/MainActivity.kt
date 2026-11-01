@@ -62,6 +62,28 @@ class MainActivity : ComponentActivity() {
                 ThemeAyneha(sombre) { Appli() }
             }
         }
+        // Mise à jour depuis ayneha.org : tirer le bandeau de l'accueil vers le bas (voir MiseAJourUi.kt).
+        maj = MiseAJourUi(
+            this,
+            accent = 0xFFF07C22.toInt(),
+            fond = 0xFF182B4D.toInt(),
+            encre = 0xFFF5EDDF.toInt(),
+            police = androidx.core.content.res.ResourcesCompat.getFont(this, R.font.ayneha_pro),
+            geste = false
+        )
+        MiseAJourUi.courant = maj
+    }
+
+    private lateinit var maj: MiseAJourUi
+
+    override fun onResume() {
+        super.onResume()
+        if (::maj.isInitialized) { MiseAJourUi.courant = maj; maj.surReprise() }
+    }
+
+    override fun onDestroy() {
+        if (MiseAJourUi.courant === maj) MiseAJourUi.courant = null
+        super.onDestroy()
     }
 }
 
